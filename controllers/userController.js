@@ -1,39 +1,16 @@
 const { User } = require("../models");
 const jwt = require("jsonwebtoken");
+const validateLoginInput = require("../helpers/loginValidator");
+const validateRegisterInput = require("../helpers/registrationValidator");
 
 // Require the secret sauce
 const jwtSecret = process.env.JWTSECRET;
 
 module.exports = {
-  register: (req, res) => {
-    const { errors, isValid } = validateRegisterInput(req.body);
-    // Check Validation
-    if (!isValid) {
-      return res.status(400).json(errors);
-    }
-
-    const { email, name, password } = req.body;
-    User.findOne({ email: email }).then(user => {
-      if (user) {
-        errors.email = "email already registered";
-        return res.status(409).json(errors);
-      } else {
-        //es6 short hand for name:name, email:email etc.
-        const newUser = new User({
-          name,
-          email,
-          password
-        });
-        newUser
-          .save()
-          .then(user => res.status(201).json(user))
-          .catch(err => {
-            console.log(err);
-            errors.db = "an error has occured in saving in the db";
-            res.status("500").json(errors);
-          });
-      }
-    });
+  getAll: (req, res) => {
+    User.find({})
+      .then(user => res.json(user))
+      .catch(err => res.status(500).json(err));
   },
 
   login: (req, res) => {
@@ -83,6 +60,37 @@ module.exports = {
             login: "an error has occurred in the login process"
           });
         });
+    });
+  },
+
+  register: (req, res) => {
+    const { errors, isValid } = validateRegisterInput(req.body);
+    // Check Validation
+    if (!isValid) {
+      return res.status(400).json(errors);
+    }
+
+    const { email, name, password } = req.body;
+    User.findOne({ email: email }).then(user => {
+      if (user) {
+        errors.email = "email already registered";
+        return res.status(409).json(errors);
+      } else {
+        //es6 short hand for name:name, email:email etc.
+        const newUser = new User({
+          name,
+          email,
+          password
+        });
+        newUser
+          .save()
+          .then(user => res.status(201).json(user))
+          .catch(err => {
+            console.log(err);
+            errors.db = "an error has occured in saving in the db";
+            res.status("500").json(errors);
+          });
+      }
     });
   }
 };

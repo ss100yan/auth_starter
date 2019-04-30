@@ -1,3 +1,4 @@
+const router = require("express").Router();
 /**
  * @access Public
  * @desc Tests the pokemon route
@@ -7,3 +8,5 @@
 router.get("/test", (req, res) => {
   res.status("200").json("the pokemon endpoint works");
 });
+
+module.exports = router;

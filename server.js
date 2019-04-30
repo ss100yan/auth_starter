@@ -1,7 +1,7 @@
 // load the environment variables
-require("./settings/environment")();
+require("./config/environment")();
 
-const app = require("app");
+const app = require("./app");
 const http = require("http");
 
 const PORT = process.env.PORT || 5000;

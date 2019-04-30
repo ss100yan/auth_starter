@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
+const path = require("path");
+
 const dbConnector = require("./config/db");
 const routes = require("./routes");
 
