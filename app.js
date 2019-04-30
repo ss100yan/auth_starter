@@ -11,7 +11,7 @@ dbConnector();
 const app = express();
 const PORT = process.env.port || 5001;
 
-// Middlewares
+// MiddleWares
 
 // refactored to use helmet set security-related HTTP response headers
 app.use(helmet());
