@@ -1,28 +1,22 @@
-const express = require('express');
-const mongoSanitize = require('express-mongo-sanitize');
-const dbConnector = require('./config/db');
-const { users  } =require('./routes/api');
+// load the environment variables
+require("./settings/environment")();
 
+const app = require("app");
+const http = require("http");
 
-// connect to the database
-dbConnector();
+const PORT = process.env.PORT || 5000;
 
-// Base requirements
-const app = express();
-const PORT = process.env.port || 5001;
+/**
+ * This function takes the approach described in the node js best practices
+ * abstracting app and server from each other
+ * @see https://github.com/i0natan/nodebestpractices/blob/master/sections/projectstructre/separateexpress.md
+ * this will simply create a server with the app.js listening on PORT
+ */
+const createSimpleServer = app => {
+  const server = http.createServer(app);
+  server.listen(PORT, () => {
+    console.log(`Hello World 🌎 I'm Listening on port ${PORT} `);
+  });
+};
 
-// Middleware
-// Will replace prohibited characters with _,
-app.use(mongoSanitize({ replaceWith: '_' }));
-// support parsing of application/json type post data and limit payload
-app.use(express.json({ limit: '300kb' }));
-//support parsing of application/x-www-form-urlencoded post data
-app.use(express.urlencoded({ extended: true }));
-
-app.use('/api/users', users);
-
-
-// Listen on the port
-app.listen(PORT, () => {
-  console.log(`Hey there guise I'm on ports ${PORT}`)
-});
+createSimpleServer(app);
