@@ -9,10 +9,23 @@ const jwtSecret = process.env.JWTSECRET;
 module.exports = {
   getAll: (req, res) => {
     User.find({})
-      .then(user => res.json(user))
+      .then(user => res.status(200).json(user))
       .catch(err => res.status(500).json(err));
   },
-
+  findById: (req, res) => {
+    User.find({ id: req.params.id })
+      .then(user => res.status(200).json(user))
+      .catch(err => res.status(500).json(err));
+  },
+  deleteById: (req, res) => {
+    User.deleteOne({ id: req.params.id })
+      .then(user =>
+        res
+          .status(200)
+          .json({ message: `deleted the user # ${req.params.id}`, ...user })
+      )
+      .catch(err => res.status(500).json(err));
+  },
   login: (req, res) => {
     const { errors, isValid } = validateLoginInput(req.body);
     // Check Validation
@@ -56,15 +69,16 @@ module.exports = {
         })
         .catch(err => {
           console.log(err);
-          res.status("500").json({
+          return res.status("500").json({
             login: "an error has occurred in the login process"
           });
         });
     });
   },
-
   register: (req, res) => {
+    console.log("called");
     const { errors, isValid } = validateRegisterInput(req.body);
+    console.log(errors, isValid);
     // Check Validation
     if (!isValid) {
       return res.status(400).json(errors);
@@ -81,14 +95,14 @@ module.exports = {
           name,
           email,
           password
-        });
-        newUser
+        })
           .save()
           .then(user => res.status(201).json(user))
           .catch(err => {
             console.log(err);
-            errors.db = "an error has occured in saving in the db";
-            res.status("500").json(errors);
+            return res.status("500").json({
+              login: "an error has occurred in the registration process"
+            });
           });
       }
     });

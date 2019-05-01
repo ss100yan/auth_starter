@@ -1,12 +1,13 @@
 const router = require("express").Router();
 const userRoutes = require("./user");
 const pokemonRoutes = require("./pokemon");
+const { authenticate } = require("../../middleware/");
 
 // User Routes
 router.use("/users", userRoutes);
 
 // Pokemon Routes
-router.use("/pokemon", pokemonRoutes);
+router.use("/pokemon", authenticate, pokemonRoutes);
 
 // Failed To Find
 router.use("*", (req, res) => {

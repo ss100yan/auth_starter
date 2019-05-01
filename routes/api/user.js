@@ -1,19 +1,16 @@
 const router = require("express").Router();
 const userController = require("../../controllers/userController");
-const authCheck = require("../../middleware/authCheck");
+const authCheck = require("../../middleware/authenticationCheck");
+const { authenticate, authorization } = require("../../middleware/");
 
 /**
  * @access  Private
  * @desc    Return All users
  * @route   GET api/users/
- * @returns a 200 JSON representation of the current user
+ * @returns a 200 JSON representation of the current users
  * */
 router.get("/", authCheck, (req, res) => {
-  res.json({
-    id: req.user.id,
-    name: req.user.name,
-    email: req.user.email
-  });
+  userController.getAll(req, res);
 });
 
 /**
@@ -23,11 +20,27 @@ router.get("/", authCheck, (req, res) => {
  * @returns a 200 JSON representation of the current user
  * */
 router.get("/current", authCheck, (req, res) => {
-  res.json({
-    id: req.user.id,
-    name: req.user.name,
-    email: req.user.email
-  });
+  res.json({ ...req.user._doc });
+});
+
+/**
+ * @access  Private
+ * @desc    Deletes the specified user
+ * @route   DELETE api/users/:id
+ * @returns a 200 JSON representation of the current users
+ * */
+router.delete("/:id", [authenticate, authorization], (req, res) => {
+  userController.deleteById(req, res);
+});
+
+/**
+ * @access  Private
+ * @desc    Return The user specified by ID
+ * @route   GET api/users/:id
+ * @returns a 200 JSON representation of the current users
+ * */
+router.get("/:id", authenticate, (req, res) => {
+  userController.findById(req, res);
 });
 
 /**
