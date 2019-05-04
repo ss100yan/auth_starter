@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "keygen": "node ./scripts/generateKeyPairs.js",
     "seed": "node ./scripts/seeder.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "resetModules": "rm -rf node_modules && npm i"
